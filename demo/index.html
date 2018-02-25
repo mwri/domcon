@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  
+  <head>
+    <meta charset="utf-8">
+    <title>DOMCON demo</title>
+    <script src="lib/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/domcon/dist/domcon.js"></script>
+    <style>
+      .online { background-color: #a0f0a0; }
+      .offline { background-color: #f0a0a0; }
+      table,th,td { border: 1px solid #000000; border-collapse: collapse; }
+      tr { background-color: #f0f0f0; }
+      th, td { padding: 0.25em; }
+      pre { background-color: #f0f0f0; border: 1px dashed black; padding: 0.5em; }
+    </style>
+  </head>
+  
+  <body>
+    <p>The following javascript:</p>
+    <pre>
+      let dc = new domcon('div', {}, [
+      ['table', {}, [
+      ['tr', {}, [ ['th', {}, 'ID'], ['th', {}, 'Name'], ['th', {}, 'Position'], ['th', {}, 'Online'] ] ],
+      ['tbody', {}, [
+      ['tr', {}, [ ['td', {}, '1'], ['td', {}, 'Michael'], ['td', {}, 'Director'], ['td', {class:'online'}, '4 min'] ] ],
+      ['tr', {}, [ ['td', {}, '2'], ['td', {}, 'John'], ['td', {}, 'Manager'], ['td', {class:'online'}, '1 hour'] ] ],
+      ['tr', {}, [ ['td', {}, '3'], ['td', {}, 'Andrew'], ['td', {}, 'Janitor'], ['td', {class:'offline'}, 'Offline'] ] ],
+      ]],
+      ]]
+      ]).append_to($('body'));
+    </pre>
+    <p>Generates the following HTML:</p>
+    <pre>
+      &lt;table&gt;
+      &lt;tr&gt;
+      &lt;th&gt;ID&lt;/th&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;Position&lt;/th&gt;&lt;th&gt;Online&lt;/th&gt;
+      &lt;/tr&gt;
+      &lt;tbody&gt;
+      &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;&lt;td&gt;Michael&lt;/td&gt;&lt;td&gt;Director&lt;/td&gt;&lt;td class="online"&gt;4 min&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;&lt;td&gt;2&lt;/td&gt;&lt;td&gt;John&lt;/td&gt;&lt;td&gt;Manager&lt;/td&gt;&lt;td class="online"&gt;1 hour&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+      &lt;td&gt;3&lt;/td&gt;&lt;td&gt;Andrew&lt;/td&gt;&lt;td&gt;Janitor&lt;/td&gt;&lt;td class="offline"&gt;Offline&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;/tbody&gt;
+      &lt;/table&gt;
+    </pre>
+    <p>Which is rendered as follows:</p>
+  </body>
+  
+  <script>
+    
+    let dc = new domcon('div', {}, [
+        ['table', {}, [
+            ['tr', {}, [ ['th', {}, 'ID'], ['th', {}, 'Name'], ['th', {}, 'Position'], ['th', {}, 'Online'] ] ],
+            ['tbody', {}, [
+                ['tr', {}, [ ['td', {}, '1'], ['td', {}, 'Michael'], ['td', {}, 'Director'], ['td', {class:'online'}, '4 min'] ] ],
+                ['tr', {}, [ ['td', {}, '2'], ['td', {}, 'John'], ['td', {}, 'Manager'], ['td', {class:'online'}, '1 hour'] ] ],
+                ['tr', {}, [ ['td', {}, '3'], ['td', {}, 'Andrew'], ['td', {}, 'Janitor'], ['td', {class:'offline'}, 'Offline'] ] ],
+            ]],
+        ]]
+    ]).append_to($('body'));
+    
+  </script>
+  
+</html>

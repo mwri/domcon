@@ -1,0 +1,63 @@
+{
+  "name": "domcon",
+  "description": "DOM element constructor",
+  "version": "1.0.0",
+  "author": {
+    "name": "Michael Wright",
+    "email": "mjw@methodanalysis.com"
+  },
+  "os": [
+    "linux"
+  ],
+  "main": "dist/domcon.js",
+  "license": "MIT",
+  "url": "https://github.com/mwri/domcon",
+  "scripts": {
+    "prepublishOnly": "./node_modules/grunt-cli/bin/grunt prepublish",
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mwri/domcon.git"
+  },
+  "keywords": [
+    "dom",
+    "html",
+    "constructor",
+    "builder"
+  ],
+  "bugs": {
+    "url": "https://github.com/mwri/domcon/issues"
+  },
+  "homepage": "https://github.com/mwri/domcon#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-istanbul": "^0.12.2",
+    "babel-preset-env": "^1.6.1",
+    "chai-jasmine": "^1.0.7",
+    "eslint": "^4.18.0",
+    "grunt": "^1.0.1",
+    "grunt-babel": "^7.0.0",
+    "grunt-cli": "^1.2.0",
+    "grunt-contrib-jshint": "^1.1.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-eslint": "^20.1.0",
+    "grunt-git": "^1.0.9",
+    "grunt-mocha-istanbul": "^5.0.2",
+    "grunt-mocha-test": "^0.13.3",
+    "istanbul": "^0.4.5",
+    "load-grunt-tasks": "^3.5.2",
+    "mocha": "^4.0.1",
+    "coveralls": "=2.11.16"
+  },
+  "dependencies": {
+    "jquery": "^3.3.1"
+  },
+  "babel": {
+    "presets": [
+      "env"
+    ],
+    "sourceMaps": "both"
+  }
+}
