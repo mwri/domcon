@@ -4,6 +4,7 @@ node_js:
 dist: trusty
 addons:
   chrome: stable
+sudo: required
 before_install:
   - export CHROME_BIN=chromium-browser
 before_install:
