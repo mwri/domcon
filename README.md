@@ -35,6 +35,24 @@ This will construct the following:
 </form>
 ```
 
+The same construction can be achieved more tersely still with:
+
+```javascript
+let nl_form_dc = new domcon(
+    {'form': [
+        {'div[class="form-group"]': [
+            {'label': 'New label'},
+            {'input[type="input",class="form-control"]': ''},
+            {'button[type="submit",class="btn btn-primary"]': 'OK'},
+        ]},
+    ]}
+).append_to(this);
+```
+
+This might look like only a marginal improvement, but some constructions
+are MUCH more terse, where the parser can make assumptions about your
+intent. See the [constructor](#constructor) documentation for details.
+
 And, it will also make the individual elements easily accessible, so to
 access the `input` element, as a jQuery selection, to get it's value
 for example:
@@ -114,6 +132,8 @@ let enemy_input_value = form_dc.div.enemy[0].jquery().val();
       1. [constructor](#constructor).
       2. [jquery](#jquery).
       3. [append_to](#append_to).
+      4. [ele_name](#ele_name).
+      5. [nav_id](#nav_id).
 2. [Build](#build).
 
 ## Full API reference
@@ -124,23 +144,11 @@ Include the ES5 dist as follows:
 <script type="text/javascript" src="lib/domcon/dist/domcon.js"></script>
 ```
 
-Or, if environmentally appropriate, import the `domcon` constructor with
-import:
-
-```javascript
-import domcon from 'domcon';
-```
-
-Or with require:
-
-```javascript
-let domcon = require('domcon').default;
-```
-
 ### constructor
 
-Constructs a `domcon` object, building the DOM elements described. For
-example:
+Constructs a `domcon` object, building the DOM elements described. There
+are two structural formats that may be used, the first is based around
+a recursive four element array format, for example:
 
 ```javascript
 let form_dc = new domcon('form', {}, [
@@ -192,6 +200,101 @@ If the second input had not been given an alternative navigation ID the
 two inputs jQuery selections would be `form_dc.div.input[0].jquery()` and
 `form_dc.div.input[1].jquery()` respectively.
 
+The second **more terse specification** can make assumptions about
+your intent, based on DOM expectations, and this, along with some other
+adjustments to the specification, can make it much more terse. First, the
+form above in this altnerative more terse format:
+
+```javascript
+let form_dc = new domcon(
+    {'form': [
+        {'div[class="form-group"]': [
+            {'label': 'Add friend:'},
+            {'input[type="input",class="form-control"]': ''},
+            {'label': 'Add enemy:'},
+            {'input/enemy[type="input",class="form-control"]': ''},
+            {'button[type="submit",class="btn btn-primary"]': 'OK'},
+        ]},
+    ]},
+);
+```
+
+There is no assumption advantage here however, so, a better example is a
+table. Teke the following:
+
+```javascript
+let dc2 = new domcon(
+    {'table': [
+        {'tr': ['ID', 'Name', 'Position', 'Online']},
+        {'tbody': [
+            {'tr/first[class="blue",id="top"]': ['1', 'Michael', 'Director', {'td[class="online"]': '4 min'}]},
+            {'tr': ['2', 'John', 'Manager', {'td[class="online"]': '1 hour'}]},
+            {'tr': ['3', 'Andrew', 'Janitor', {'td[class="offline"]': 'Offline'}]},
+        ]},
+    ]}
+);
+```
+
+Here, a simple string is given for all the `TR` child elements
+constituting the table header, and the same for many of the `TR`
+child elements in the table body as well. The context (i.e. `TR`
+inside `TABLE` of `TR` inside `TBODY` allows the parser to decide
+if a `TH` or a `TD` should be created.
+
+The HTML generated in this case is:
+
+```html
+<table>
+  <tr>
+    <th>ID</th><th>Name</th><th>Position</th><th>Online</th>
+  </tr>
+  <tbody>
+    <tr class="blue" id="top">
+      <td>1</td><td>Michael</td><td>Director</td><td class="online">4 min</td>
+    </tr>
+    <tr>
+      <td>2</td><td>John</td><td>Manager</td><td class="online">1 hour</td>
+    </tr>
+    <tr>
+      <td>3</td><td>Andrew</td><td>Janitor</td><td class="offline">Offline</td>
+    </tr>
+  </tbody>
+</table>
+```
+
+Using the original four element array structure would look like this
+(almost twice as much text):
+
+```javascript
+let dc1 = new domcon('div', {}, [
+    ['table', {}, [
+        ['tr', {}, [
+            ['th', {}, 'ID'], ['th', {}, 'Name'], ['th', {}, 'Position'], ['th', {}, 'Online'],
+        ] ],
+        ['tbody', {}, [
+            ['tr', {'class' 'blue', 'id': 'top'}, [
+                ['td', {}, '1'], ['td', {}, 'Michael'], ['td', {}, 'Director'], ['td', {class:'online'}, '4 min']
+            ], 'first' ],
+            ['tr', {}, [
+                ['td', {}, '2'], ['td', {}, 'John'], ['td', {}, 'Manager'], ['td', {class:'online'}, '1 hour']
+            ] ],
+            ['tr', {}, [
+                ['td', {}, '3'], ['td', {}, 'Andrew'], ['td', {}, 'Janitor'], ['td', {class:'offline'}, 'Offline']
+            ] ],
+        ]],
+    ]]
+]);
+```
+
+If `domcon` is called on to make an assumption but doesn't know
+the context, an error will be thrown with the message **do not
+know what element to include for "STRING"**, where STRING is the
+content you have provided. In this case, you can either specify
+the name of the element by changing `"STRING"` into something
+like `{'NAME': 'STRING'}`, or add the missing assumption to
+the `default_child` static function in the `domcon` class (and
+submit a pull request for the change of course).
+
 ### jquery
 
 Returns a jQuery selection for the represented DOM. For example:
@@ -215,7 +318,23 @@ the constructor, for example:
 ```javascript
 let form_dc = new domcon('div', {}, [
 ]).append_to($('#parent'));
+```
 
+### ele_name
+
+Returns the name of the represented name:
+
+```javascript
+let ele_name = dc.ele_name();
+```
+
+Here `ele_name` would be `"div"` or `"form"` or some such.
+
+### nav_id
+
+Returns the navigation ID from the parent to the `domcon` object.
+This would be the same as the element name, unless an alternative
+has been given.
 
 ## Build
 
