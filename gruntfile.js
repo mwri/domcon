@@ -11,19 +11,84 @@ module.exports = function(grunt) {
             options: {
                 esversion: 6,
                 '-W083':  true,
+				laxbreak: true,
+				validthis: true,
             }
         },
 
         watch: {
             build: {
                 options: { spawn: true },
-                files: ['gruntfile.js', 'lib/*.js'],
+                files: ['gruntfile.js', 'lib/*.js', 'test/*.js'],
                 tasks: ['build'],
             },
         },
 
         eslint: {
             target: ['lib'],
+        },
+
+        karma: {
+            build: {
+                options: {
+                    files: [
+                        'node_modules/jquery/dist/jquery.min.js',
+                        'dist/domcon.js',
+                        'test/*.js',
+                    ],
+                    basePath:    '',
+                    urlRoot:     '/',
+                    frameworks:  ['jasmine'],
+                    port:        9876,
+                    colors:      true,
+                    autoWatch:   false,
+                    interval:    200,
+                    singleRun:   true,
+                    browsers:    ['ChromeHeadless'],
+                    reporters:   ['spec', 'coverage'],
+                    preprocessors: { 'dist/domcon.js': ['coverage'] },
+                    concurrency: Infinity,
+                    coverageReporter: {
+                        reporters: [
+                            { type : 'lcov', subdir: 'karma/' },
+                            { type : 'text' },
+                        ],
+                    },
+                },
+            },
+            travis_ci: {
+                options: {
+                    files: [
+                        'node_modules/jquery/dist/jquery.min.js',
+                        'dist/domcon.js',
+                        'test/*.js',
+                    ],
+                    basePath:      '',
+                    urlRoot:       '/',
+                    frameworks:    ['jasmine'],
+                    port:          9876,
+                    colors:        true,
+                    autoWatch:     false,
+                    interval:      200,
+                    singleRun:     true,
+                    browsers:      ['ChromeHeadlessNoSandbox'],
+                    reporters:     ['spec', 'coverage'],
+                    preprocessors: { 'dist/domcon.js': ['coverage'] },
+                    concurrency:   Infinity,
+                    customLaunchers: {
+                        ChromeHeadlessNoSandbox: {
+                            base:  'ChromeHeadless',
+                            flags: ['--no-sandbox']
+                        },
+                    },
+                    coverageReporter: {
+                        reporters: [
+                            { type : 'lcov', subdir: 'karma/' },
+                            { type : 'text' },
+                        ],
+                    },
+                },
+            },
         },
 
         babel: {
@@ -55,6 +120,14 @@ module.exports = function(grunt) {
         'jshint',
         'eslint',
         'babel',
+        'karma:build',
+    ]);
+
+    grunt.registerTask('travis_ci_build', [
+        'jshint',
+        'eslint',
+        'babel',
+        'karma:travis_ci',
     ]);
 
     grunt.registerTask('prepublish', [

@@ -1,0 +1,14 @@
+language: node_js
+node_js:
+  - "6"
+dist: trusty
+addons:
+  chrome: stable
+before_install:
+  - export CHROME_BIN=chromium-browser
+before_install:
+  - if [[ `npm -v` = 2* ]]; then npm i -g npm@3; fi
+script:
+  - ./node_modules/.bin/grunt build
+after_success:
+  - ./node_modules/.bin/coveralls < coverage/karma/lcov.info
