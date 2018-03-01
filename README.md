@@ -220,10 +220,10 @@ let form_dc = new domcon(
 ```
 
 There is no assumption advantage here however, so, a better example is a
-table. Teke the following:
+table. Take the following:
 
 ```javascript
-let dc2 = new domcon(
+let table_dc = new domcon(
     {'table': [
         {'tr': ['ID', 'Name', 'Position', 'Online']},
         {'tbody': [
@@ -238,7 +238,7 @@ let dc2 = new domcon(
 Here, a simple string is given for all the `TR` child elements
 constituting the table header, and the same for many of the `TR`
 child elements in the table body as well. The context (i.e. `TR`
-inside `TABLE` of `TR` inside `TBODY` allows the parser to decide
+inside `TABLE` or `TR` inside `TBODY` allows the parser to decide
 if a `TH` or a `TD` should be created.
 
 The HTML generated in this case is:
@@ -266,7 +266,7 @@ Using the original four element array structure would look like this
 (almost twice as much text):
 
 ```javascript
-let dc1 = new domcon('div', {}, [
+let table_dc = new domcon('div', {}, [
     ['table', {}, [
         ['tr', {}, [
             ['th', {}, 'ID'], ['th', {}, 'Name'], ['th', {}, 'Position'], ['th', {}, 'Online'],
@@ -309,7 +309,7 @@ Appends the represented DOM to the jQuery selection or DOM element
 passed. For example:
 
 ```javascript
-db.append_to($('#foobar'));
+dc.append_to($('#foobar'));
 ```
 
 The call returns the `domcon` object so that it can be chained to
