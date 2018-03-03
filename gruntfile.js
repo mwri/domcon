@@ -22,6 +22,11 @@ module.exports = function(grunt) {
                 files: ['gruntfile.js', 'lib/*.js', 'test/*.js'],
                 tasks: ['build'],
             },
+            test: {
+                options: { spawn: true },
+                files: ['gruntfile.js', 'lib/*.js', 'test/*.js'],
+                tasks: ['test'],
+            },
         },
 
         eslint: {
@@ -29,6 +34,26 @@ module.exports = function(grunt) {
         },
 
         karma: {
+            test: {
+                options: {
+                    files: [
+                        'node_modules/jquery/dist/jquery.min.js',
+                        'dist/domcon.js',
+                        'test/*.js',
+                    ],
+                    basePath:    '',
+                    urlRoot:     '/',
+                    frameworks:  ['jasmine'],
+                    port:        9876,
+                    colors:      true,
+                    autoWatch:   false,
+                    interval:    200,
+                    singleRun:   true,
+                    browsers:    ['ChromeHeadless'],
+                    reporters:   ['spec'],
+                    concurrency: Infinity,
+                },
+            },
             build: {
                 options: {
                     files: [
@@ -115,6 +140,13 @@ module.exports = function(grunt) {
         },
 
     });
+
+    grunt.registerTask('test', [
+        'jshint',
+        'eslint',
+        'babel',
+        'karma:test',
+    ]);
 
     grunt.registerTask('build', [
         'jshint',
