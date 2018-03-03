@@ -1,8 +1,12 @@
 # domcon [![Build Status](https://travis-ci.org/mwri/domcon.svg?branch=master)](https://travis-ci.org/mwri/domcon) [![Coverage Status](https://coveralls.io/repos/github/mwri/domcon/badge.svg?branch=master)](https://coveralls.io/github/mwri/domcon?branch=master)
 
 'Domcon' allows significant DOM structures to be built from a fairly
-terse descriptive structure, and facilitates easy access to any elements
-as a jQuery selection.
+terse descriptive structure, and facilitates easy access to any elements.
+
+Note that version 2 does not require jQuery, the dependency was removed
+as it was adding very little value, and some methods as well which were
+just pass throughs or had no clear use case. jQuery is used in the test
+suite for convenience however.
 
 ## Quick start
 
@@ -46,29 +50,29 @@ let nl_form_dc = new domcon(
             {'button[type="submit",class="btn btn-primary"]': 'OK'},
         ]},
     ]}
-).append_to(this);
+);
 ```
 
 This might look like only a marginal improvement, but some constructions
 are MUCH more terse, where the parser can make assumptions about your
 intent. See the [constructor](#constructor) documentation for details.
 
-And, it will also make the individual elements easily accessible, so to
-access the `input` element, as a jQuery selection, to get it's value
-for example:
+The individual elements are made easily accessible, which is crucial if
+you construct a large lump of DOM but then need easy access to the
+various bits. So to access the `input` element for example:
 
 ```javascript
-let input_value = form_dc.div.input.jquery().val();
+let input_element = form_dc.div.input.e;
 ```
 
 Because there can be multiple elements of the same name however, the
 following also works:
 
 ```javascript
-let input_value = form_dc.div.input[0].jquery().val();
+let input_element = form_dc.div.input[0].e;
 ```
 
-If for example you build DOM elements as follows:
+If you build DOM elements as follows:
 
 ```javascript
 let form_dc = new domcon('form', {}, [
@@ -85,13 +89,14 @@ let form_dc = new domcon('form', {}, [
 The first and second input values can now be acquired like this:
 
 ```javascript
-let friend_input_value = form_dc.div.input[0].jquery().val();
-let enemy_input_value = form_dc.div.input[1].jquery().val();
+let friend_input_element = form_dc.div.input[0].e;
+let enemy_input_element = form_dc.div.input[1].e;
 ```
 
-Note that though the numbered access method works if there is one or
+Note that though this numbered access method works if there is one or
 many elements with the given name, leaving out the number does not
-work if there are many.
+work if there are many, as this would be ambiguous and require
+arbitrary behaviour.
 
 A way to avoid using the numeric indexing in this case is to supply
 an alternative unique ID name, using the fourth field in the element
@@ -112,16 +117,16 @@ let form_dc = new domcon('form', {}, [
 Now the input values can now be acquired like this:
 
 ```javascript
-let friend_input_value = form_dc.div.friend.jquery().val();
-let enemy_input_value = form_dc.div.enemy.jquery().val();
+let friend_input_element = form_dc.div.friend.e;
+let enemy_input_element = form_dc.div.enemy.e;
 ```
 
 Or like this (the substitute ID doesn't actually have to be
 unique so it is possible for there to me more than one):
 
 ```javascript
-let friend_input_value = form_dc.div.friend[0].jquery().val();
-let enemy_input_value = form_dc.div.enemy[0].jquery().val();
+let friend_input_element = form_dc.div.friend[0].e;
+let enemy_input_element = form_dc.div.enemy[0].e;
 ```
 
 ## Contents
@@ -129,11 +134,12 @@ let enemy_input_value = form_dc.div.enemy[0].jquery().val();
 1. [Quick start](#quick-start).
    1. [Contents](#contents).
    2. [Full API reference](#full-api-reference).
-      1. [constructor](#constructor).
-      2. [jquery](#jquery).
-      3. [append_to](#append_to).
-      4. [ele_name](#ele_name).
-      5. [nav_id](#nav_id).
+      1. [Attributes](#attributes).
+         1. [e](#e).
+      2. [Functions](#functions).
+         1. [constructor](#constructor).
+         2. [append_to](#append_to).
+         3. [append](#append).
 2. [Build](#build).
 
 ## Full API reference
@@ -144,7 +150,25 @@ Include the ES5 dist as follows:
 <script type="text/javascript" src="lib/domcon/dist/domcon.js"></script>
 ```
 
-### constructor
+### attributes
+
+#### e
+
+The `e` attribute is the DOM element. So for example if `dc` is your
+`domcon` object `dc.e` will be the DOM element it represents, or
+`$(dc.e)` the equivalent jQuery selection of it. A child element
+is no different so `dc.form.input.e` and `$(dc.form.input.e)` would
+be the input child(ren) element(s) of the form of the `domcon` object
+and the jQuery selection respectively.
+
+The jQuery selection conversion will work transparently if there is
+a single or many children, and you can end up with a jQuery selection
+which has fairly arbitrary elements represented, because those are
+the ones you tagged with a particular alternative name.
+
+### functions
+
+#### constructor
 
 Constructs a `domcon` object, building the DOM elements described. There
 are two structural formats that may be used, the first is based around
@@ -189,20 +213,19 @@ The above example will construct the following HTML therefore:
 ```
 
 The elements created can be navigated by using the element names (or the
-alternative navigation ID if provided in parameter four. The first input
-can be accessed as a `domcon` object as `form_dc.div.input` and as a
-jQuery selection as `form_dc.div.input.jquery()`. The second input
-can be accessed as a `domcon` object as `form_dc.div.enemy` and as a
-jQuery selection as `form_dc.div.enemy.jquery()`, because the altnerative
-navigation ID `enemy` was used.
+alternative navigation ID if provided in parameter four. In the example
+above, the first input `domcon` object will be `form_dc.div.input`, and
+the second input `domcon` object will be `form_dc.div.enemy`, because
+the altnerative navigation ID `enemy` was used. Append `.e` to get the
+element represented by the `domcon` object.
 
 If the second input had not been given an alternative navigation ID the
-two inputs jQuery selections would be `form_dc.div.input[0].jquery()` and
-`form_dc.div.input[1].jquery()` respectively.
+two input `domcon` objects would have been `form_dc.div.input[0]` and
+`form_dc.div.input[1]` respectively.
 
 The second **more terse specification** can make assumptions about
 your intent, based on DOM expectations, and this, along with some other
-adjustments to the specification, can make it much more terse. First, the
+adjustments to the format, can make it much more terse. First, the
 form above in this altnerative more terse format:
 
 ```javascript
@@ -295,46 +318,27 @@ like `{'NAME': 'STRING'}`, or add the missing assumption to
 the `default_child` function class (and submit a pull request
 for the change of course).
 
-### jquery
+#### append_to
 
-Returns a jQuery selection for the represented DOM. For example:
-
-```javascript
-dc.jquery().click(my_click_handler);
-```
-
-### append_to
-
-Appends the represented DOM to the jQuery selection or DOM element
-passed. For example:
+Appends the represented DOM element to the DOM element passed.
+For example:
 
 ```javascript
-dc.append_to($('#foobar'));
+dc.append_to(other_element);
 ```
 
-The call returns the `domcon` object so that it can be chained to
-the constructor, for example:
+This is the same as `other_element.appendChild(dc.e)`.
+
+#### append
+
+Appends the DOM element passed to the represented DOM element.
+For example:
 
 ```javascript
-let form_dc = new domcon('div', {}, [
-]).append_to($('#parent'));
+dc.append(other_element);
 ```
 
-### ele_name
-
-Returns the name of the represented name:
-
-```javascript
-let ele_name = dc.ele_name();
-```
-
-Here `ele_name` would be `"div"` or `"form"` or some such.
-
-### nav_id
-
-Returns the navigation ID from the parent to the `domcon` object.
-This would be the same as the element name, unless an alternative
-has been given.
+This is the same as `dc.e.appendChild(other_element)`.
 
 ## Build
 

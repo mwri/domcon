@@ -1,21 +1,6 @@
 (function () {
 
 
-    if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
-        var jsdom = require('jsdom');
-        var { JSDOM } = jsdom;
-        let { window } = new JSDOM('<html><head></head><body></body></html>');
-        var domcon = require('./../dist/domcon.js').default;
-        var jQuery = require('jquery')(window);
-        var $ = jQuery;
-        require('chai-jasmine');
-    } else {
-        var domcon = window.domcon;
-        var jQuery = window.jQuery;
-        var $ = window.$;
-    }
-
-
     function gen_tests (tests) {
 
         for (let i = 0; i < tests.length; i++) {
@@ -27,7 +12,8 @@
                     bindapply_args.unshift(null);
                     let bound_domcon = Function.bind.apply(domcon, bindapply_args);
                     let dc = new bound_domcon();
-                    $('body').append(dc.jquery());
+                    let body = document.getElementsByTagName('body')[0];
+                    body.appendChild(dc.e);
                     return test.check(dc);
                 });
             }
@@ -37,7 +23,8 @@
                     bindapply_args.unshift(null);
                     let bound_domcon = Function.bind.apply(domcon, bindapply_args);
                     let dc = new bound_domcon();
-                    $('body').append(dc.jquery());
+                    let body = document.getElementsByTagName('body')[0];
+                    body.appendChild(dc.e);
                     return test.check(dc);
                 });
             }
@@ -151,7 +138,7 @@
                 terse: { args: [{'div': ''}] },
                 check: (dc) => {
                     expect($('body > div').length).toBe(1);
-                    expect(dc.jquery()[0]).toBe($('body > div')[0]);
+                    expect(dc.e).toBe($('body > div')[0]);
                 },
             }, {
                 name: 'first child navigation by element name',
@@ -159,7 +146,7 @@
                 terse: { args: [{'div': [ {'form': ''} ]}] },
                 check: (dc) => {
                     expect($('body > div > form').length).toBe(1);
-                    expect(dc.form.jquery()[0]).toBe($('body > div > form')[0]);
+                    expect(dc.form.e).toBe($('body > div > form')[0]);
                 },
             }, {
                 name: 'navigation by element name order index works when there is no name clash',
@@ -167,7 +154,7 @@
                 terse: { args: [{'div': [ {'form': ''} ]}] },
                 check: (dc) => {
                     expect($('body > div > form').length).toBe(1);
-                    expect(dc.form[0].jquery()[0]).toBe($('body > div > form')[0]);
+                    expect(dc.form[0].e).toBe($('body > div > form')[0]);
                 },
             }, {
                 name: 'second level child navigation by element name',
@@ -175,7 +162,7 @@
                 terse: { args: [{'div': [ {'form': [ {'input': ''} ]} ]}] },
                 check: (dc) => {
                     expect($('body > div > form > input').length).toBe(1);
-                    expect(dc.form.input.jquery()[0]).toBe($('body > div > form > input')[0]);
+                    expect(dc.form.input.e).toBe($('body > div > form > input')[0]);
                 },
             }, {
                 name: 'navigation by element name becomes array when element names clash',
@@ -191,8 +178,8 @@
                 terse: { args: [{'div': [ {'form': [ {'input': ''}, {'input': ''} ]} ]}] },
                 check: (dc) => {
                     expect($('body > div > form > input').length).toBe(2);
-                    expect(dc.form.input[0].jquery()[0]).toBe($('body > div > form > input:eq(0)')[0]);
-                    expect(dc.form.input[1].jquery()[0]).toBe($('body > div > form > input:eq(1)')[0]);
+                    expect(dc.form.input[0].e).toBe($('body > div > form > input:eq(0)')[0]);
+                    expect(dc.form.input[1].e).toBe($('body > div > form > input:eq(1)')[0]);
                 },
             }, {
                 name: 'navigation by element name order index works when more element names clash',
@@ -200,9 +187,9 @@
                 terse: { args: [{'div': [ {'form': [ {'input': ''}, {'input': ''}, {'input': ''} ]} ]}] },
                 check: (dc) => {
                     expect($('body > div > form > input').length).toBe(3);
-                    expect(dc.form.input[0].jquery()[0]).toBe($('body > div > form > input:eq(0)')[0]);
-                    expect(dc.form.input[1].jquery()[0]).toBe($('body > div > form > input:eq(1)')[0]);
-                    expect(dc.form.input[2].jquery()[0]).toBe($('body > div > form > input:eq(2)')[0]);
+                    expect(dc.form.input[0].e).toBe($('body > div > form > input:eq(0)')[0]);
+                    expect(dc.form.input[1].e).toBe($('body > div > form > input:eq(1)')[0]);
+                    expect(dc.form.input[2].e).toBe($('body > div > form > input:eq(2)')[0]);
                 },
             }, {
                 name: 'first child navigation by alt name',
@@ -210,7 +197,7 @@
                 terse: { args: [{'div': [ {'form/data': ''} ]}] },
                 check: (dc) => {
                     expect($('body > div > form').length).toBe(1);
-                    expect(dc.data.jquery()[0]).toBe($('body > div > form')[0]);
+                    expect(dc.data.e).toBe($('body > div > form')[0]);
                 },
             }, {
                 name: 'navigation by alt name eliminates element names navigation clash',
@@ -218,8 +205,8 @@
                 terse: { args: [{'div': [ {'form': [ {'input/first': ''}, {'input': ''} ]} ]}] },
                 check: (dc) => {
                     expect($('body > div > form > input').length).toBe(2);
-                    expect(dc.form.first.jquery()[0]).toBe($('body > div > form > input:eq(0)')[0]);
-                    expect(dc.form.input.jquery()[0]).toBe($('body > div > form > input:eq(1)')[0]);
+                    expect(dc.form.first.e).toBe($('body > div > form > input:eq(0)')[0]);
+                    expect(dc.form.input.e).toBe($('body > div > form > input:eq(1)')[0]);
                 },
             }]);
 
