@@ -34,11 +34,11 @@
 
     describe('domcon', () => {
 
-        describe('DOM construction', () => {
+        beforeEach(() => {
+            $('body').empty();
+        });
 
-            beforeEach(() => {
-                $('body').empty();
-            });
+        describe('DOM construction', () => {
 
             gen_tests([{
                 name: 'element name only',
@@ -128,10 +128,6 @@
 
         describe('Easy navigation', () => {
 
-            beforeEach(() => {
-                $('body').empty();
-            });
-
             gen_tests([{
                 name: 'root jquery element is the element inserted in the DOM',
                 strict: { args: ['div'] },
@@ -212,9 +208,40 @@
 
         });
 
+        describe('Method', () => {
+
+            it('append_to appends the represented DOM to the passed DOM', () => {
+                let dc = new domcon('div');
+                expect($('body > div').length).toBe(0);
+                dc.append_to($('body')[0]);
+                expect($('body > div').length).toBe(1);
+            });
+
+            it('append appends the passed DOM to the represented DOM', () => {
+                let div_dc = new domcon('div');
+                let body = document.getElementsByTagName('body')[0];
+                body.appendChild(div_dc.e);
+                let form_dc = new domcon('form');
+                expect($('body > div > form').length).toBe(0);
+                div_dc.append(form_dc.e);
+                expect($('body > div > form').length).toBe(1);
+            });
+
+        });
+
         describe('Error conditions (thrown)', () => {
 
-            it('when a terse specification is made with multiple keys', () => {
+            it('when the first argument is undefined', () => {
+                try {
+                    new domcon();
+                    throw new Error('no exception thrown');
+                } catch (err) {
+                    if (!/must be a string or an object/.exec(err))
+                        throw err;
+                }
+            });
+
+            it('when a terse spec is made with multiple keys', () => {
                 try {
                     new domcon({'div': '', 'table': ''});
                     throw new Error('no exception thrown');
@@ -224,7 +251,7 @@
                 }
             });
 
-            it('when a terse specification is made with no keys', () => {
+            it('when a terse spec is made with no keys', () => {
                 try {
                     new domcon({});
                     throw new Error('no exception thrown');
@@ -234,7 +261,7 @@
                 }
             });
 
-            it('when a terse specification invalid element name description is given', () => {
+            it('when a terse spec invalid element name description is given', () => {
                 try {
                     new domcon({' foo ': ''});
                     throw new Error('no exception thrown');
@@ -244,7 +271,7 @@
                 }
             });
 
-            it('when a terse specification invalid attribute description is given', () => {
+            it('when a terse spec invalid attribute description is given', () => {
                 try {
                     new domcon({'foo[bat]': ''});
                     throw new Error('no exception thrown');
@@ -254,7 +281,7 @@
                 }
             });
 
-            it('when a terse specification invalid inner is given', () => {
+            it('when a terse spec invalid inner is given', () => {
                 try {
                     new domcon({'div': [4]});
                     throw new Error('no exception thrown');
@@ -264,9 +291,29 @@
                 }
             });
 
-            it('when a terse specification has no default child assumption it can make', () => {
+            it('when a terse spec has no default child behaviour for the element name', () => {
                 try {
                     new domcon({'div': [ 'mysterious' ]});
+                    throw new Error('no exception thrown');
+                } catch (err) {
+                    if (!/do not know what element/.exec(err))
+                        throw err;
+                }
+            });
+
+            it('when a terse spec requires a default child assumption for a TR with no parent', () => {
+                try {
+                    new domcon({'tr': [ 'mysterious' ]});
+                    throw new Error('no exception thrown');
+                } catch (err) {
+                    if (!/do not know what element/.exec(err))
+                        throw err;
+                }
+            });
+
+            it('when a terse spec requires a default child assumption for a TR with mysterious parent', () => {
+                try {
+                    new domcon({'div': [ {'tr': [ 'mysterious' ] } ]});
                     throw new Error('no exception thrown');
                 } catch (err) {
                     if (!/do not know what element/.exec(err))
