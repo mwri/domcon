@@ -292,8 +292,8 @@ know what element to include for "STRING"**, where STRING is the
 content you have provided. In this case, you can either specify
 the name of the element by changing `"STRING"` into something
 like `{'NAME': 'STRING'}`, or add the missing assumption to
-the `default_child` static function in the `domcon` class (and
-submit a pull request for the change of course).
+the `default_child` function class (and submit a pull request
+for the change of course).
 
 ### jquery
 
