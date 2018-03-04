@@ -41,6 +41,7 @@
     describe('domcon', () => {
 
         beforeEach(() => {
+            expect($('body').length).toBe(1);
             $('body').empty();
         });
 
@@ -253,11 +254,89 @@
                 expect($('body > div > form').length).toBe(1);
             });
 
+            it('extend accepts four argument format and appends new elements to the DOM (first child)', () => {
+                let table_dc = new domcon({'table': [
+                    {'tbody': []},
+                ]}).append_to($('body')[0]);
+                expect($('body > table > tbody > tr').length).toBe(0);
+                table_dc.tbody.extend('tr', {'class': 'baz'}, [ ['td'], ['td'] ]);
+                expect($('body > table > tbody > tr.baz').length).toBe(1);
+                expect($('body > table > tbody > tr.baz > td').length).toBe(2);
+            });
+
+            it('extend accepts terse argument format and appends new elements to the DOM (first child)', () => {
+                let table_dc = new domcon({'table': [
+                    {'tbody': []},
+                ]}).append_to($('body')[0]);
+                expect($('body > table > tbody > tr').length).toBe(0);
+                table_dc.tbody.extend({'tr[class="baz"]': ['an', 'other']});
+                expect($('body > table > tbody > tr.baz').length).toBe(1);
+                expect($('body > table > tbody > tr.baz > td').length).toBe(2);
+            });
+
+            it('extend accepts array argument format appends new elements to the DOM (first child)', () => {
+                let table_dc = new domcon({'table': [
+                    {'tbody': []},
+                ]}).append_to($('body')[0]);
+                expect($('body > table > tbody > tr').length).toBe(0);
+                table_dc.tbody.extend(['tr', {'class': 'baz'}, [ ['td'], ['td'] ]]);
+                expect($('body > table > tbody > tr.baz').length).toBe(1);
+                expect($('body > table > tbody > tr.baz > td').length).toBe(2);
+            });
+
+            it('extend appends new elements to the DOM (second child)', () => {
+                let table_dc = new domcon({'table': [
+                    {'tbody': [
+                        {'tr': ['this', 'that']}
+                    ]}
+                ]}).append_to($('body')[0]);
+                expect($('body > table > tbody > tr').length).toBe(1);
+                table_dc.tbody.extend({'tr': ['an', 'other']});
+                expect($('body > table > tbody > tr').length).toBe(2);
+            });
+
+            it('extend appends new elements to the DOM (third child)', () => {
+                let table_dc = new domcon({'table': [
+                    {'tbody': [
+                        {'tr': ['this', 'that']}
+                    ]}
+                ]}).append_to($('body')[0]);
+                expect($('body > table > tbody > tr').length).toBe(1);
+                table_dc.tbody.extend({'tr': ['an', 'other']});
+                expect($('body > table > tbody > tr').length).toBe(2);
+                table_dc.tbody.extend({'tr': ['yet', 'another']});
+                expect($('body > table > tbody > tr').length).toBe(3);
+            });
+
+            it('extend updates the domcom navigation (first child)', () => {
+                let table_dc = new domcon({'table': [
+                    {'tbody': []},
+                ]}).append_to($('body')[0]);
+                table_dc.tbody.extend({'tr': ['an', 'other']});
+                expect(table_dc.tbody.tr.length).toBe(1);
+                expect(table_dc.tbody.tr instanceof domcon).toBe(true);
+            });
+
+            it('extend updates the domcom navigation (second child)', () => {
+                let table_dc = new domcon({'table': [
+                    {'tbody': [
+                        {'tr': ['this', 'that']}
+                    ]}
+                ]}).append_to($('body')[0]);
+                expect(table_dc.tbody.tr.length).toBe(1);
+                expect(table_dc.tbody.tr instanceof domcon).toBe(true);
+                table_dc.tbody.extend({'tr': ['an', 'other']});
+                expect(table_dc.tbody.tr.length).toBe(2);
+                expect(table_dc.tbody.tr instanceof Array).toBe(true);
+                expect(table_dc.tbody.tr[0] instanceof domcon).toBe(true);
+                expect(table_dc.tbody.tr[1] instanceof domcon).toBe(true);
+            });
+
         });
 
         describe('Error conditions (thrown)', () => {
 
-            it('when the first argument is undefined', () => {
+            it('when the constructor first argument is undefined', () => {
                 try {
                     new domcon();
                     throw new Error('no exception thrown');
@@ -343,6 +422,17 @@
                     throw new Error('no exception thrown');
                 } catch (err) {
                     if (!/do not know what element/.exec(err))
+                        throw err;
+                }
+            });
+
+            it('when the extend first argument is undefined', () => {
+                try {
+                    let dc = new domcon('div');
+                    dc.extend();
+                    throw new Error('no exception thrown');
+                } catch (err) {
+                    if (!/must be a string or an object/.exec(err))
                         throw err;
                 }
             });

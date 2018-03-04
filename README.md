@@ -140,6 +140,7 @@ let enemy_input_element = form_dc.div.enemy[0].e;
          1. [constructor](#constructor).
          2. [append_to](#append_to).
          3. [append](#append).
+         4. [extend](#extend).
 2. [Build](#build).
 
 ## Full API reference
@@ -349,6 +350,39 @@ dc.append(other_element);
 This is the same as `dc.e.appendChild(other_element)`.
 
 Passing a `domcon` object also works.
+
+#### extend
+
+Extends an existing `domcon` object with another child. This is useful
+in scenarios where some aspects of a DOM structure are initially created
+but then due to events or some other stimulus the DOM is added to.
+Clearly one perfectly valid solution is to use the DOM elements in the
+original structure and manipulate them directly, but this will not change
+the original `domcon` object, and if that is inconvenient, use this
+method.
+
+Take the following for example:
+
+```
+let table_dc = new domcon({'table': [ ['tbody'] ]});
+```
+
+Adding rows to the table could later be done like this:
+
+```javascript
+$(table_dc.e).append($('<tr><td>this</td><td>that</td></tr>'));
+```
+
+If it is useful to maintain the `domcon` object though, do this instead:
+
+```javascript
+table_dc.tbody.extend({'tr': ['this', 'that']});
+```
+
+Navigation to the rows then works as normal, so `table_dc.tbody.tr[n]`
+will be the `domcon` object for any row added this way. If you sneek
+in a row without 'extending' the `domcon` object though, that row
+will always be invisible to it!
 
 ## Build
 
