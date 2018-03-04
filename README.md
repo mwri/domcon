@@ -318,6 +318,12 @@ like `{'NAME': 'STRING'}`, or add the missing assumption to
 the `default_child` function class (and submit a pull request
 for the change of course).
 
+Finally, an array may be given as a single parameter to the
+constructor, and is taken to contain the four arguments (element
+name, attributes, child elements specification and alternative
+navigation name), as usual (though, also as usual, only the
+first is mandatory).
+
 #### append_to
 
 Appends the represented DOM element to the DOM element passed.

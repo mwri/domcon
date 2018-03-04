@@ -7,7 +7,7 @@
             let test = tests[i];
             let test_name = test.name;
             if (test.strict !== undefined) {
-                it(test.name+' (strict)', () => {
+                it(test.name+' (strict/params)', () => {
                     let bindapply_args = test.strict.args.slice();
                     bindapply_args.unshift(null);
                     let bound_domcon = Function.bind.apply(domcon, bindapply_args);
@@ -16,9 +16,15 @@
                     body.appendChild(dc.e);
                     return test.check(dc);
                 });
+                it(test.name+' (strict/array)', () => {
+                    let dc = new domcon(test.strict.args);
+                    let body = document.getElementsByTagName('body')[0];
+                    body.appendChild(dc.e);
+                    return test.check(dc);
+                });
             }
             if (test.terse !== undefined) {
-                it(test.name+' (terse)', () => {
+                it(test.name+' (terse/object)', () => {
                     let bindapply_args = test.terse.args.slice();
                     bindapply_args.unshift(null);
                     let bound_domcon = Function.bind.apply(domcon, bindapply_args);
