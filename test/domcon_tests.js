@@ -223,6 +223,16 @@
                 expect($('body > div').length).toBe(1);
             });
 
+            it('append_to appends the represented DOM to the DOM of the domcom object passed', () => {
+                let div_dc = new domcon('div');
+                expect($('body > div').length).toBe(0);
+                div_dc.append_to($('body')[0]);
+                let form_dc = new domcon('form');
+                expect($('body > div > form').length).toBe(0);
+                form_dc.append_to(div_dc);
+                expect($('body > div > form').length).toBe(1);
+            });
+
             it('append appends the passed DOM to the represented DOM', () => {
                 let div_dc = new domcon('div');
                 let body = document.getElementsByTagName('body')[0];
@@ -230,6 +240,16 @@
                 let form_dc = new domcon('form');
                 expect($('body > div > form').length).toBe(0);
                 div_dc.append(form_dc.e);
+                expect($('body > div > form').length).toBe(1);
+            });
+
+            it('append appends the passed represented DOM od the domcon object passed to the represented DOM', () => {
+                let div_dc = new domcon('div');
+                let body = document.getElementsByTagName('body')[0];
+                body.appendChild(div_dc.e);
+                let form_dc = new domcon('form');
+                expect($('body > div > form').length).toBe(0);
+                div_dc.append(form_dc);
                 expect($('body > div > form').length).toBe(1);
             });
 

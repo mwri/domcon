@@ -335,6 +335,8 @@ dc.append_to(other_element);
 
 This is the same as `other_element.appendChild(dc.e)`.
 
+Passing a `domcon` object also works.
+
 #### append
 
 Appends the DOM element passed to the represented DOM element.
@@ -345,6 +347,8 @@ dc.append(other_element);
 ```
 
 This is the same as `dc.e.appendChild(other_element)`.
+
+Passing a `domcon` object also works.
 
 ## Build
 
