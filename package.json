@@ -10,6 +10,7 @@
     "linux"
   ],
   "main": "dist/domcon.js",
+  "module": "lib/domcon.js",
   "license": "MIT",
   "url": "https://github.com/mwri/domcon",
   "scripts": {
