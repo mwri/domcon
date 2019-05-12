@@ -1,7 +1,7 @@
 {
   "name": "domcon",
   "description": "DOM element constructor",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "author": {
     "name": "Michael Wright",
     "email": "mjw@methodanalysis.com"
