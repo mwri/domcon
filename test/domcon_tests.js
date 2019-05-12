@@ -114,6 +114,14 @@
                 terse: { args: [{'div': [ ['div'] ]}] },
                 check: () => { expect($('body > div > div').length).toBe(1); },
             }, {
+                name: 'child element assumed th in thead,tr (legacy behaviour, for backwards compatibility only)',
+                terse: { args: [{'table': [ {'thead': [ {'tr': [ 'h1', 'h2' ]} ]} ]}] },
+                check: () => {
+                    expect($('body > table > thead > tr > th').length).toBe(2);
+                    expect($('body > table > thead > tr > th:eq(0)').text()).toBe('h1');
+                    expect($('body > table > thead > tr > th:eq(1)').text()).toBe('h2');
+                },
+            }, {
                 name: 'child element assumed th in table,tr',
                 terse: { args: [{'table': [ {'tr': [ 'h1', 'h2' ]} ]}] },
                 check: () => {

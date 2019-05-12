@@ -249,7 +249,9 @@ table. Take the following:
 ```javascript
 let table_dc = new domcon(
     {'table': [
-        {'tr': ['ID', 'Name', 'Position', 'Online']},
+        {'thead': [
+            {'tr': ['ID', 'Name', 'Position', 'Online']},
+        ]},
         {'tbody': [
             {'tr/first[class="blue",id="top"]': ['1', 'Michael', 'Director', {'td[class="online"]': '4 min'}]},
             {'tr': ['2', 'John', 'Manager', {'td[class="online"]': '1 hour'}]},
@@ -262,16 +264,18 @@ let table_dc = new domcon(
 Here, a simple string is given for all the `TR` child elements
 constituting the table header, and the same for many of the `TR`
 child elements in the table body as well. The context (i.e. `TR`
-inside `TABLE` or `TR` inside `TBODY` allows the parser to decide
+inside `THEAD` or `TR` inside `TBODY` allows the parser to decide
 if a `TH` or a `TD` should be created.
 
 The HTML generated in this case is:
 
 ```html
 <table>
-  <tr>
-    <th>ID</th><th>Name</th><th>Position</th><th>Online</th>
-  </tr>
+  <thead>
+    <tr>
+      <th>ID</th><th>Name</th><th>Position</th><th>Online</th>
+    </tr>
+  </thead>
   <tbody>
     <tr class="blue" id="top">
       <td>1</td><td>Michael</td><td>Director</td><td class="online">4 min</td>
@@ -292,9 +296,11 @@ Using the original four element array structure would look like this
 ```javascript
 let table_dc = new domcon('div', {}, [
     ['table', {}, [
-        ['tr', {}, [
-            ['th', {}, 'ID'], ['th', {}, 'Name'], ['th', {}, 'Position'], ['th', {}, 'Online'],
-        ] ],
+        ['thead', {}, [
+            ['tr', {}, [
+                ['th', {}, 'ID'], ['th', {}, 'Name'], ['th', {}, 'Position'], ['th', {}, 'Online'],
+            ] ],
+        ]],
         ['tbody', {}, [
             ['tr', {'class' 'blue', 'id': 'top'}, [
                 ['td', {}, '1'], ['td', {}, 'Michael'], ['td', {}, 'Director'], ['td', {class:'online'}, '4 min']
