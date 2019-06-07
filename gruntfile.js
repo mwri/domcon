@@ -38,7 +38,7 @@ module.exports = function(grunt) {
                 options: {
                     files: [
                         'node_modules/jquery/dist/jquery.min.js',
-                        'dist/domcon.js',
+                        'lib/domcon.js',
                         'test/*.js',
                     ],
                     basePath:    '',
@@ -58,7 +58,7 @@ module.exports = function(grunt) {
                 options: {
                     files: [
                         'node_modules/jquery/dist/jquery.min.js',
-                        'dist/domcon.js',
+                        'lib/domcon.js',
                         'test/*.js',
                     ],
                     basePath:    '',
@@ -71,7 +71,7 @@ module.exports = function(grunt) {
                     singleRun:   true,
                     browsers:    ['ChromeHeadless'],
                     reporters:   ['spec', 'coverage'],
-                    preprocessors: { 'dist/domcon.js': ['coverage'] },
+                    preprocessors: { 'lib/domcon.js': ['coverage'] },
                     concurrency: Infinity,
                     coverageReporter: {
                         reporters: [
@@ -85,7 +85,7 @@ module.exports = function(grunt) {
                 options: {
                     files: [
                         'node_modules/jquery/dist/jquery.min.js',
-                        'dist/domcon.js',
+                        'lib/domcon.js',
                         'test/*.js',
                     ],
                     basePath:      '',
@@ -98,7 +98,7 @@ module.exports = function(grunt) {
                     singleRun:     true,
                     browsers:      ['ChromeHeadlessNoSandbox'],
                     reporters:     ['spec', 'coverage'],
-                    preprocessors: { 'dist/domcon.js': ['coverage'] },
+                    preprocessors: { 'lib/domcon.js': ['coverage'] },
                     concurrency:   Infinity,
                     customLaunchers: {
                         ChromeHeadlessNoSandbox: {
@@ -112,14 +112,6 @@ module.exports = function(grunt) {
                             { type : 'text' },
                         ],
                     },
-                },
-            },
-        },
-
-        babel: {
-            dist: {
-                files: {
-                    'dist/<%=pkg.name%>.js': 'lib/<%=pkg.name%>.js',
                 },
             },
         },
@@ -144,21 +136,18 @@ module.exports = function(grunt) {
     grunt.registerTask('test', [
         'jshint',
         'eslint',
-        'babel',
         'karma:test',
     ]);
 
     grunt.registerTask('build', [
         'jshint',
         'eslint',
-        'babel',
         'karma:build',
     ]);
 
     grunt.registerTask('travis_ci_build', [
         'jshint',
         'eslint',
-        'babel',
         'karma:travis_ci',
     ]);
 

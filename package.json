@@ -9,7 +9,7 @@
   "os": [
     "linux"
   ],
-  "main": "dist/domcon.js",
+  "main": "lib/domcon.js",
   "module": "lib/domcon.js",
   "license": "MIT",
   "url": "https://github.com/mwri/domcon",
@@ -39,7 +39,6 @@
     "coveralls": "^3.0.3",
     "eslint": "^4.18.0",
     "grunt": "^1.0.4",
-    "grunt-babel": "^7.0.0",
     "grunt-cli": "^1.2.0",
     "grunt-contrib-clean": "^2.0.0",
     "grunt-contrib-jshint": "^1.1.0",

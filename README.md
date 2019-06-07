@@ -141,15 +141,8 @@ let enemy_input_element = form_dc.div.enemy[0].e;
          2. [append_to](#append_to).
          3. [append](#append).
          4. [extend](#extend).
-2. [Build](#build).
 
 ## Full API reference
-
-Include the ES5 dist as follows:
-
-```html
-<script type="text/javascript" src="lib/domcon/dist/domcon.js"></script>
-```
 
 ### attributes
 
@@ -389,23 +382,3 @@ Navigation to the rows then works as normal, so `table_dc.tbody.tr[n]`
 will be the `domcon` object for any row added this way. If you sneek
 in a row without 'extending' the `domcon` object though, that row
 will always be invisible to it!
-
-## Build
-
-run `npm install` to install the dependencies, and `grunt build` to
-build (or `./node_modules/.bin/grunt build` if you do not have
-grunt, grunt CLI locally installed.
-
-This will run code checkers and linters and the test suite, report on
-coverage and build build `dist/domcon_es5.js`, an ES5 babel
-transpile of the ES6 source.
-
-Running `grunt watch:build` will watch for changes to the source or
-tests and invoke the full build cycle when they are detected. Running
-`grunt watch:test` will again watch for changes, and invoke the most
-light weight possible file test cycle.
-
-Note that in the event of stack traces being output during the full
-build, with coverage reports, the stack trace line numbers will be
-broken. Run `test` or `watch:test` for valid stack traces instead
-of `build`.
