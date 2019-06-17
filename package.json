@@ -44,7 +44,7 @@
     "grunt-contrib-jshint": "^1.1.0",
     "grunt-contrib-watch": "^1.1.0",
     "grunt-eslint": "^20.1.0",
-    "grunt-git": "^1.0.13",
+    "grunt-git": "^1.0.14",
     "grunt-karma": "^3.0.2",
     "http-server": "^0.11.1",
     "jasmine-core": "^3.1.0",
